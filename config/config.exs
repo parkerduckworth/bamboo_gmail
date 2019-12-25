@@ -29,4 +29,4 @@ use Mix.Config
 #
 #     import_config "#{Mix.env()}.exs"
 
-config :goth, json: {:system, "GCP_CREDENTIALS"}
+config :goth, disabled: true

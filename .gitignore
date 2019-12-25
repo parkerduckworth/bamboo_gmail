@@ -23,4 +23,4 @@ erl_crash.dump
 bamboo_gmail-*.tar
 
 # Shell scripts
-run-local.sh
+*.sh
