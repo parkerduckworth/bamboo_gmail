@@ -1,8 +1,19 @@
-defmodule BambooGmailTest do
+defmodule Bamboo.GmailAdapterTest do
   use ExUnit.Case
-  doctest BambooGmail
 
-  test "greets the world" do
-    assert BambooGmail.hello() == :world
+  alias Bamboo.GmailAdapter
+  alias Bamboo.GmailAdapter.Errors.{ConfigError}
+
+  doctest Bamboo.GmailAdapter
+
+  @invalid_config %{
+    app: :mailer,
+    adapter: :adapter
+  }
+
+  test "invalid configuration raises ConfigError" do
+    assert_raise ConfigError, fn ->
+      GmailAdapter.handle_config(@invalid_config)
+    end
   end
 end
