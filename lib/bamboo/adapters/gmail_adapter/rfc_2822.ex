@@ -5,13 +5,13 @@ defmodule Bamboo.GmailAdapter.RFC2822 do
   @months ~w(Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec)
 
   @moduledoc """
-  RFC2822 Parser:  Port from [elixir-mail](https://github.com/DockYard/elixir-mail)
+  RFC2822 Parser:  Adapted from [elixir-mail](https://github.com/DockYard/elixir-mail)
 
   Bcc headers are blacklisted during execution of 
   `render/1` in the original repository.
 
   It is unclear why the block on bcc was imposed, 
-  but this port removes the blacklist.
+  but this module removes the blacklist.
 
   Will attempt to render a valid RFC2822 message
   from a `%Mail.Message{}` data model.

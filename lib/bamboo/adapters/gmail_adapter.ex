@@ -1,6 +1,65 @@
 defmodule Bamboo.GmailAdapter do
   @moduledoc """
-  Documentation for Bamboo.GmailAdapter
+  Sends email using the Gmail API with OAuth2 authentication
+
+  There are a few preconditions that must be met before this adapter can be used to send email:
+  1. Admin access to a GSuite account
+  2. Implement [server-side authorization](https://developers.google.com/gmail/api/auth/web-server)
+  3. Grant the service account domain-wide authority
+  4. Authorize API client with required scopes
+
+  Some application settings must be configured. See the example section below.
+
+  ---
+
+  ## Config Settings
+
+  #### Required GmailAdapter settings:
+
+  `adapter`: Bamboo adapter 
+
+  `sub`: Email address the service account is impersonating (address the email is sent from).
+  - If impersonation is not needed, then `nil` (it is likely needed).
+
+
+  #### Required Dependency settings:
+
+  `json`: Google auth crendentials must be povided in JSON format.
+  - These are generated in the [Google Developers Console](https://console.developers.google.com/)
+
+
+  #### Optional settings:
+
+  `sandbox`: development mode that does not send email. 
+  - details of the API call are instead output to the elixir console.
+
+
+  #### Note:
+
+  *Secrets such as the service account sub, and the auth credentials should not
+  be commited to version control.*
+
+  Instead, pass in via environment variables using a tuple: `{:system, "SUB_ADDRESS"}`,
+  or read in from a file: `"creds.json" |> File.read!`
+
+  --- 
+
+  ## Example Config
+
+    config :app_name, GmailAdapterTestWeb.Mailer,
+      adapter: Bamboo.GmailAdapter,
+      sub: {:system, "SUB_ADDRESS"},
+      sandbox: false
+
+    # Google auth credentials must be provided to the `goth` app
+    config :goth, json: {:system, "GCP_CREDENTIALS"}
+
+  ---
+
+  ## Google Authorization/Authentication Help
+
+  The Google-related preconditions described above may be a little tricky.
+  If you find yourself stuck, please refer to the [wiki]() for help.
   """
 
   import Bamboo.GmailAdapter.RFC2822, only: [render: 1]
@@ -109,7 +168,7 @@ defmodule Bamboo.GmailAdapter do
   # Right now `sub` is the only required field. 
   # TODO: Generalize this function
   defp validate_config_fields(config = %{sub: _}), do: config
-  
+
   defp validate_config_fields(_no_match) do
     handle_error(:conf, "sub")
   end
