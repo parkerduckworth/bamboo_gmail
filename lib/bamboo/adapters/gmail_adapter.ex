@@ -66,7 +66,7 @@ defmodule Bamboo.GmailAdapter do
   alias Bamboo.GmailAdapter.Errors.{ConfigError, TokenError, HTTPError}
 
   @gmail_auth_scope "https://www.googleapis.com/auth/gmail.send"
-  @gmail_send_endpoint "https://www.googleapis.com/gmail/v1/users/me/messages/send"
+  @gmail_send_url "https://www.googleapis.com/gmail/v1/users/me/messages/send"
   @behaviour Bamboo.Adapter
 
   def deliver(email, config) do
@@ -77,7 +77,6 @@ defmodule Bamboo.GmailAdapter do
     validate_config_fields(config)
   end
 
-  # TODO: Handle attachments
   def supports_attachments?, do: true
 
   defp handle_dispatch(email, config = %{sandbox: true}) do
@@ -85,6 +84,7 @@ defmodule Bamboo.GmailAdapter do
     log_to_sandbox(email, label: "email")
 
     build_message(email)
+    |> render()
     |> log_to_sandbox(label: "MIME message")
     |> Base.url_encode64()
     |> log_to_sandbox(label: "base64url encoded message")
@@ -95,13 +95,11 @@ defmodule Bamboo.GmailAdapter do
   end
 
   defp handle_dispatch(email, config) do
-    message =
-      build_message(email)
-      |> Base.url_encode64()
+    message = build_message(email)
 
     get_sub(config)
     |> get_access_token()
-    |> make_request(message)
+    |> build_request(message)
   end
 
   defp build_message(email) do
@@ -114,7 +112,6 @@ defmodule Bamboo.GmailAdapter do
     |> put_html_body(email)
     |> put_text_body(email)
     |> put_attachments(email)
-    |> render()
   end
 
   defp put_to(message, %{to: recipients}) do
@@ -152,14 +149,39 @@ defmodule Bamboo.GmailAdapter do
     Mail.put_text(message, text_body)
   end
 
-  # TODO: Implement
-  defp put_attachments(message, _attachment), do: message
+  defp put_attachments(message, %{attachments: attachments}) do
+    put_attachments_helper(message, attachments)
+  end
 
-  defp make_request(token, message) do
-    headers = build_request_headers(token)
-    body = build_request_body(message)
+  defp put_attachments_helper(message, [head | tail]) do
+    put_attachments_helper(message, head)
+    |> put_attachments_helper(tail)
+  end
 
-    case HTTPoison.post(@gmail_send_endpoint, body, headers) do
+  defp put_attachments_helper(message, %Bamboo.Attachment{filename: filename, data: data}) do
+    attachment =
+      Mail.Message.build_attachment({filename, data})
+      |> Mail.Message.put_header(:content_type, "application/octet-stream")
+      |> Mail.Message.put_header(:content_length, byte_size(data))
+
+    Mail.Message.put_part(message, attachment)
+  end
+
+  defp put_attachments_helper(message, _no_attachments) do
+    message
+  end
+
+  defp build_request(token, message) do
+    header = build_request_header(token)
+
+    render(message)
+    |> Base.url_encode64()
+    |> build_request_body()
+    |> send_request(header, @gmail_send_url)
+  end
+
+  defp send_request(body, header, url) do
+    case HTTPoison.post(url, body, header) do
       {:ok, response} -> response
       {:error, error} -> handle_error(:http, error)
     end
@@ -203,7 +225,7 @@ defmodule Bamboo.GmailAdapter do
     end
   end
 
-  defp build_request_headers(token) do
+  defp build_request_header(token) do
     [Authorization: "Bearer #{token}", "Content-Type": "application/json"]
   end
 
