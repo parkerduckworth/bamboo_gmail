@@ -8,30 +8,18 @@ defmodule Bamboo.GmailAdapter do
   3. Grant the service account domain-wide authority
   4. Authorize API client with required scopes
 
-  Some application settings must be configured. See the example section below.
+  Some application settings must be configured. See the [example section](#module-example-config) below.
 
   ---
 
-  ## Config Settings
+  ## Configuration
 
-  #### Required GmailAdapter settings:
-
-  `adapter`: Bamboo adapter 
-
-  `sub`: Email address the service account is impersonating (address the email is sent from).
-  - If impersonation is not needed, then `nil` (it is likely needed).
-
-
-  #### Required Dependency settings:
-
-  `json`: Google auth crendentials must be povided in JSON format.
-  - These are generated in the [Google Developers Console](https://console.developers.google.com/)
-
-
-  #### Optional settings:
-
-  `sandbox`: development mode that does not send email. 
-  - details of the API call are instead output to the elixir console.
+  | Setting | Description | Required? |
+  | ---------- | ---------- | ---------- |
+  | `adapter` | Bamboo adapter in use (`Bamboo.GmailAdapter`). | Yes |
+  | `sub` | Email address the service account is impersonating (address the email is sent from).  If impersonation is not needed, then `nil` (it is likely needed). | Yes |
+  |`sandbox` | Development mode that does not send email.  Details of the API call are instead output to the elixir console. | No |
+  | `json` | Google auth crendentials must be provided in JSON format to the `:goth` app.  These are generated in the [Google Developers Console](https://console.developers.google.com/). | Yes |
 
 
   #### Note:
@@ -39,27 +27,23 @@ defmodule Bamboo.GmailAdapter do
   *Secrets such as the service account sub, and the auth credentials should not
   be commited to version control.*
 
-  Instead, pass in via environment variables using a tuple: `{:system, "SUB_ADDRESS"}`,
-  or read in from a file: `"creds.json" |> File.read!`
+  Instead, pass in via environment variables using a tuple: 
+      {:system, "SUB_ADDRESS"}
+
+  Or read in from a file: 
+      "creds.json" |> File.read!
 
   --- 
 
   ## Example Config
 
-    config :app_name, GmailAdapterTestWeb.Mailer,
-      adapter: Bamboo.GmailAdapter,
-      sub: {:system, "SUB_ADDRESS"},
-      sandbox: false
+      config :app_name, GmailAdapterTestWeb.Mailer,
+        adapter: Bamboo.GmailAdapter,
+        sub: {:system, "SUB_ADDRESS"},
+        sandbox: false
 
-    # Google auth credentials must be provided to the `goth` app
-    config :goth, json: {:system, "GCP_CREDENTIALS"}
-
-  ---
-
-  ## Google Authorization/Authentication Help
-
-  The Google-related preconditions described above may be a little tricky.
-  If you find yourself stuck, please refer to the [wiki]() for help.
+      # Google auth credentials must be provided to the `goth` app
+      config :goth, json: {:system, "GCP_CREDENTIALS"}
   """
 
   import Bamboo.GmailAdapter.RFC2822, only: [render: 1]

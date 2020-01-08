@@ -1,6 +1,19 @@
 # Bamboo.GmailAdapter
 
+[![Hex.pm](https://img.shields.io/hexpm/v/bamboo_gmail)](https://hex.pm/packages/bamboo_gmail)
+
 Gmail adapter for [Bamboo](https://github.com/thoughtbot/bamboo)
+
+## Quick Links
+* [Preconditions](#preconditions)
+* [Installation](#installation)
+* [Configuration](#configuration)
+* [Documentation](#documentation)
+* [Contribute](#contribute)
+
+---
+
+## Motivation
 
 *Why not just use SMTP?*
 
@@ -26,7 +39,7 @@ The package can be installed by adding `bamboo_gmail` to your list of dependenci
 ```elixir
 def deps do
   [
-    {:bamboo_gmail, "~> 0.1.0"}
+    {:bamboo_gmail, "~> 0.2.0"}
   ]
 end
 ```
@@ -37,28 +50,13 @@ Some application settings must be configured. See the [example section](#example
 
 ## Configuration
 
-#### Required GmailAdapter settings:
+  | Setting | Description | Required? |
+  | ---------- | ---------- | ---------- |
+  | `adapter` | Bamboo adapter in use (`Bamboo.GmailAdapter`). | Yes |
+  | `sub` | Email address the service account is impersonating (address the email is sent from).  If impersonation is not needed, then `nil` (it is likely needed). | Yes |
+  |`sandbox` | Development mode that does not send email.  Details of the API call are instead output to the elixir console. | No |
+  | `json` | Google auth crendentials must be provided in JSON format to the `:goth` app.  These are generated in the [Google Developers Console](https://console.developers.google.com/). | Yes |
 
-`adapter`:
-  - Bamboo adapter
-
-`sub`:
-  - Email address the service account is impersonating (address the email is sent from).
-  - If impersonation is not needed, then `nil` (it is likely needed).
-
-
-#### Required Dependency settings:
-
-`json`: 
-  - Google auth crendentials must be povided in JSON format.
-  - These are generated in the [Google Developers Console](https://console.developers.google.com/)
-
-
-#### Optional settings:
-
-`sandbox`: 
-  - Development mode that does not send email. 
-  - details of the API call are instead output to the elixir console.
 
 ---
 
@@ -67,12 +65,19 @@ Some application settings must be configured. See the [example section](#example
 *Secrets such as the service account sub, and the auth credentials should not
 be commited to version control.*
 
-- Instead, pass in via environment variables using a tuple: `{:system, "SUB_ADDRESS"}`,
-- or read in from a file: `"creds.json" |> File.read!`
+Instead, pass in via environment variables using a tuple: 
+```elixir
+{:system, "SUB_ADDRESS"}
+```
+
+Or read in from a file: 
+```elixir
+"creds.json" |> File.read!
+```
 
 ---
 
-#### Example Config
+## Example Config
 
 ```elixir
 config :app_name, GmailAdapterTestWeb.Mailer,
@@ -83,16 +88,12 @@ config :app_name, GmailAdapterTestWeb.Mailer,
 # Google auth credentials must be provided to the `goth` app
 config :goth, json: {:system, "GCP_CREDENTIALS"}
 ```
+
 ---
 
-## Google Authorization/Authentication Help
+## Documentation
 
-The Google-related preconditions described above may be a little tricky.
-If you find yourself stuck, please refer to the [wiki]() for help.
-
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/bamboo_gmail](https://hexdocs.pm/bamboo_gmail).
+Docs can be found at [https://hexdocs.pm/bamboo_gmail](https://hexdocs.pm/bamboo_gmail).
 
 ---
 
