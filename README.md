@@ -26,7 +26,7 @@ This adapter allows GSuite account holders to use Bamboo in light of this deprec
 
 There are a few preconditions that must be met before this adapter can be used to send email:
 1. Admin access to a GSuite account
-2. Implement [server-side authorization](https://developers.google.com/gmail/api/auth/web-server)
+2. Implement [server-side authorization](https://developers.google.com/gmail/api/auth/web-server) using Service Account credentials
 3. Grant the service account domain-wide authority
 4. Authorize API client with required scopes
 
