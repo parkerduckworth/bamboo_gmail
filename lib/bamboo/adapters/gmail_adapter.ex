@@ -27,13 +27,13 @@ defmodule Bamboo.GmailAdapter do
   *Secrets such as the service account sub, and the auth credentials should not
   be commited to version control.*
 
-  Instead, pass in via environment variables using a tuple: 
+  Instead, pass in via environment variables using a tuple:
       {:system, "SUB_ADDRESS"}
 
-  Or read in from a file: 
+  Or read in from a file:
       "creds.json" |> File.read!
 
-  --- 
+  ---
 
   ## Example Config
 
@@ -171,7 +171,7 @@ defmodule Bamboo.GmailAdapter do
     end
   end
 
-  # Right now `sub` is the only required field. 
+  # Right now `sub` is the only required field.
   # TODO: Generalize this function
   defp validate_config_fields(config = %{sub: _}), do: config
 
@@ -202,10 +202,10 @@ defmodule Bamboo.GmailAdapter do
 
   defp handle_error(scope, error) do
     case scope do
-      :auth -> raise TokenError, message: error
-      :http -> raise HTTPError, message: error
-      :conf -> raise ConfigError, field: error
-      :env -> raise ArgumentError, message: error
+      :auth -> {:error, {TokenError, %{message: error}}}
+      :http -> {:error, {HTTPError, %{message: error}}}
+      :conf -> {:error, {ConfigError, %{field: error}}}
+      :env -> {:error, {ArgumentError, %{message: error}}}
     end
   end
 

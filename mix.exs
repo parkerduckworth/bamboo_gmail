@@ -27,7 +27,7 @@ defmodule BambooGmail.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:bamboo, "~> 1.3"},
+      {:bamboo, "~> 2.1"},
       {:goth, "~> 1.1.0"},
       {:httpoison, "~> 1.6"},
       {:mail, "~> 0.2"},
