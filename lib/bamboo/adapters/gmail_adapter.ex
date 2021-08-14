@@ -202,10 +202,10 @@ defmodule Bamboo.GmailAdapter do
 
   defp handle_error(scope, error) do
     case scope do
-      :auth -> {:error, TokenError.exception(message: error)}
-      :http -> {:error, HTTPError.exception(message: error)}
-      :conf -> {:error, ConfigError.exception(field: error)}
-      :env -> {:error, ArgumentError.exception(message: error)}
+      :auth -> {:error, TokenError.build_error(message: error)}
+      :http -> {:error, HTTPError.build_error(message: error)}
+      :conf -> {:error, ConfigError.build_error(field: error)}
+      :env -> {:error, ArgumentError.build_error(message: error)}
     end
   end
 
