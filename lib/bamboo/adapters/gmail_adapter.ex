@@ -93,8 +93,8 @@ defmodule Bamboo.GmailAdapter do
     |> put_bcc(email)
     |> put_from(email)
     |> put_subject(email)
-    |> put_html_body(email)
     |> put_text_body(email)
+    |> put_html_body(email)
     |> put_attachments(email)
   end
 
