@@ -166,7 +166,7 @@ defmodule Bamboo.GmailAdapter do
 
   defp send_request(body, header, url) do
     case HTTPoison.post(url, body, header) do
-      {:ok, response} -> response
+      {:ok, response} -> {:ok, response}
       {:error, error} -> handle_error(:http, error)
     end
   end
