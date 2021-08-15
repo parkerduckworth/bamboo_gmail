@@ -28,7 +28,7 @@ defmodule BambooGmail.MixProject do
   defp deps do
     [
       {:bamboo, "~> 2.1"},
-      {:goth, "~> 1.1.0"},
+      {:goth, "~> 1.2.0"},
       {:httpoison, "~> 1.6"},
       {:mail, "~> 0.2"},
       {:ex_doc, "~> 0.21", only: :dev, runtime: false}
