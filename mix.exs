@@ -6,7 +6,7 @@ defmodule BambooGmail.MixProject do
   def project do
     [
       app: :bamboo_gmail,
-      version: "0.2.0",
+      version: "0.2.1",
       elixir: "~> 1.8",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
@@ -27,8 +27,8 @@ defmodule BambooGmail.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:bamboo, "~> 1.3"},
-      {:goth, "~> 1.1.0"},
+      {:bamboo, "~> 2.1"},
+      {:goth, "~> 1.2.0"},
       {:httpoison, "~> 1.6"},
       {:mail, "~> 0.2"},
       {:ex_doc, "~> 0.21", only: :dev, runtime: false}

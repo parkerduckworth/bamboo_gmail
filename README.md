@@ -25,10 +25,17 @@ This adapter allows GSuite account holders to use Bamboo in light of this deprec
 ## Preconditions
 
 There are a few preconditions that must be met before this adapter can be used to send email:
-1. Admin access to a GSuite account
+1. Admin access to a Google Workspace account (NOTE: your personal Gmail accounts WILL NOT WORK)
+2. Enable Gmail API GCP Console
 2. Implement [server-side authorization](https://developers.google.com/gmail/api/auth/web-server) using Service Account credentials
+  - Don't give any GCP roles for the service account.
+  - Add your Google Workspace email as a user, as servicer account Owner role.
+  - If you have other Domain aliases, add those alias users in https://mail.google.com/mail/u/2/#settings/accounts, in "Send mail as"
 3. Grant the service account domain-wide authority
-4. Authorize API client with required scopes
+  - first do here: https://console.cloud.google.com/iam-admin/serviceaccounts, by clicking the service account, and going to Domain Wide Delegation
+  - Service account will create a related OAuth2.0 client id. 
+4. Authorize API client with required scopes here: https://admin.google.com/u/2/ac/owl/domainwidedelegation
+  - The scope that you need to add is: `https://www.googleapis.com/auth/gmail.send`
 
 ---
 

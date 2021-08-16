@@ -27,13 +27,13 @@ defmodule Bamboo.GmailAdapter do
   *Secrets such as the service account sub, and the auth credentials should not
   be commited to version control.*
 
-  Instead, pass in via environment variables using a tuple: 
+  Instead, pass in via environment variables using a tuple:
       {:system, "SUB_ADDRESS"}
 
-  Or read in from a file: 
+  Or read in from a file:
       "creds.json" |> File.read!
 
-  --- 
+  ---
 
   ## Example Config
 
@@ -93,8 +93,8 @@ defmodule Bamboo.GmailAdapter do
     |> put_bcc(email)
     |> put_from(email)
     |> put_subject(email)
-    |> put_html_body(email)
     |> put_text_body(email)
+    |> put_html_body(email)
     |> put_attachments(email)
   end
 
@@ -166,12 +166,12 @@ defmodule Bamboo.GmailAdapter do
 
   defp send_request(body, header, url) do
     case HTTPoison.post(url, body, header) do
-      {:ok, response} -> response
+      {:ok, response} -> {:ok, response}
       {:error, error} -> handle_error(:http, error)
     end
   end
 
-  # Right now `sub` is the only required field. 
+  # Right now `sub` is the only required field.
   # TODO: Generalize this function
   defp validate_config_fields(config = %{sub: _}), do: config
 
@@ -202,10 +202,10 @@ defmodule Bamboo.GmailAdapter do
 
   defp handle_error(scope, error) do
     case scope do
-      :auth -> raise TokenError, message: error
-      :http -> raise HTTPError, message: error
-      :conf -> raise ConfigError, field: error
-      :env -> raise ArgumentError, message: error
+      :auth -> {:error, TokenError.build_error(message: error)}
+      :http -> {:error, HTTPError.build_error(message: error)}
+      :conf -> {:error, ConfigError.build_error(field: error)}
+      :env -> {:error, ArgumentError.build_error(message: error)}
     end
   end
 

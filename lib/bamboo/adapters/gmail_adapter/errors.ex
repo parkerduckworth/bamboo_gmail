@@ -1,4 +1,15 @@
 defmodule Bamboo.GmailAdapter.Errors do
+  for exception_struct <- [__MODULE__.ConfigError, __MODULE__.TokenError, __MODULE__.HTTPError] do
+    defimpl String.Chars, for: exception_struct do
+      def to_string(exception) do
+        """
+        #{Map.fetch!(exception, :__struct__)}:
+        #{exception.message}
+        """
+      end
+    end
+  end
+
   defmodule TokenError do
     @moduledoc false
 
@@ -13,6 +24,10 @@ defmodule Bamboo.GmailAdapter.Errors do
       """
 
       %TokenError{message: message}
+    end
+
+    def build_error(fields) do
+      exception(fields)
     end
   end
 
@@ -30,6 +45,10 @@ defmodule Bamboo.GmailAdapter.Errors do
       """
 
       %TokenError{message: message}
+    end
+
+    def build_error(fields) do
+      exception(fields)
     end
   end
 
@@ -50,6 +69,10 @@ defmodule Bamboo.GmailAdapter.Errors do
       """
 
       %ConfigError{message: message}
+    end
+
+    def build_error(fields) do
+      exception(fields)
     end
   end
 end
